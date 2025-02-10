@@ -292,22 +292,14 @@ static inline bool is_inode_layout_compression(struct erofs_inode *inode)
 	return erofs_inode_is_data_compressed(inode->datalayout);
 }
 
-static inline unsigned int erofs_bitrange(unsigned int value, unsigned int bit,
-					  unsigned int bits)
+static inline unsigned int erofs_inode_version(unsigned int ifmt)
 {
-	return (value >> bit) & ((1 << bits) - 1);
+	return (ifmt >> EROFS_I_VERSION_BIT) & EROFS_I_VERSION_MASK;
 }
 
-static inline unsigned int erofs_inode_version(unsigned int value)
+static inline unsigned int erofs_inode_datalayout(unsigned int ifmt)
 {
-	return erofs_bitrange(value, EROFS_I_VERSION_BIT,
-			      EROFS_I_VERSION_BITS);
-}
-
-static inline unsigned int erofs_inode_datalayout(unsigned int value)
-{
-	return erofs_bitrange(value, EROFS_I_DATALAYOUT_BIT,
-			      EROFS_I_DATALAYOUT_BITS);
+	return (ifmt >> EROFS_I_DATALAYOUT_BIT) & EROFS_I_DATALAYOUT_MASK;
 }
 
 static inline struct erofs_inode *erofs_parent_inode(struct erofs_inode *inode)
@@ -463,7 +455,6 @@ int erofs_getxattr(struct erofs_inode *vi, const char *name, char *buffer,
 int erofs_listxattr(struct erofs_inode *vi, char *buffer, size_t buffer_size);
 
 /* zmap.c */
-int z_erofs_fill_inode(struct erofs_inode *vi);
 int z_erofs_map_blocks_iter(struct erofs_inode *vi,
 			    struct erofs_map_blocks *map, int flags);
 
